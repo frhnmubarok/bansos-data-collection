@@ -1,74 +1,73 @@
-import React, { ReactNode, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { useForm, UseFormRegisterReturn, useController } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   FormLabel,
   FormControl,
   Input,
-  InputLeftAddon,
   Button,
   chakra,
   Stack,
   Icon,
-  InputGroup,
   RadioGroup,
   FormErrorMessage,
   Radio,
   HStack,
-  Textarea,
-  useNumberInput,
   Select,
 } from '@chakra-ui/react';
-
+import { useToast } from '@chakra-ui/react';
 import { Box, Container, Flex, Heading, StackDivider, Text, VStack } from '@chakra-ui/layout';
-import { FiFile } from 'react-icons/fi';
+import { FiFile, FiSave } from 'react-icons/fi';
 import FormInput from '../../components/FormInput';
 import FormTextarea from '../../components/FormTextarea';
 import FormUpload from '../../components/FormUpload';
-import FormUploadImage from '../../components/FormUploadImage';
+import { genderEnum, reasonEnum } from '../../constants/enums';
+import server from '../../services/server';
+import FormTitle from '../../components/FormTitle';
 
 const index = () => {
-  const [image, setImage] = useState('');
   const [fotoKTPPreview, setfotoKTPPreview] = useState(null);
   const [fotoKKPreview, setfotoKKPreview] = useState(null);
   const {
     handleSubmit,
     register,
-    control,
     watch,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm();
-  const { getInputProps, getIncrementButtonProps, getDecrementButtonProps } = useNumberInput({
-    step: 1,
-    defaultValue: 25,
-    min: 25,
-  });
-
-  const inc = getIncrementButtonProps();
-  const dec = getDecrementButtonProps();
-  const input = getInputProps();
+  const toast = useToast();
 
   const watchReason = watch('reason');
 
   const onSubmit = (values) => {
-    let time = Math.floor(Math.random() * 1500);
+    let time = Math.floor(Math.random() * 2500);
+    let reason = getValues('reason');
+    let otherReason = getValues('otherReason');
+    if (otherReason !== undefined && otherReason.length > 0) {
+      reason = otherReason;
+      delete values.otherReason;
+    }
 
-    let simulateServer = new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (time < 1500) {
-          resolve(console.log({ ...values, age: parseInt(values.age) }));
-        } else {
-          reject(console.log('Timeout'));
-        }
-      }, time);
-    });
-
-    return simulateServer
+    return server(values, reason, time)
       .then(() => {
-        alert('Succes');
+        toast({
+          title: 'Berhasil',
+          description: `Data warga berhasil ditambah`,
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
       })
       .catch((err) => {
-        alert('Error');
+        toast({
+          title: 'Gagal',
+          description: 'Terjadi kesalahan pada sistem. Silahkan coba lagi dalam beberapa saat.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
       });
   };
 
@@ -87,14 +86,15 @@ const index = () => {
   };
 
   return (
-    <Container py={{ base: 12, md: 28 }} maxW={['container.sm', 'container.sm']} px={2}>
-      <Box boxShadow={'xl'} rounded={'md'} p={4} borderWidth='1px'>
+    <Container py={8} maxW={['container.sm', 'container.sm']} px={4}>
+      <FormTitle />
+      <Box boxShadow={'md'} rounded={'md'} p={4} borderWidth='1px'>
         <chakra.form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={5} divider={<StackDivider borderColor='gray.200' />}>
             <FormInput
               id='name'
               label='Nama Lengkap'
-              placeholder='Nama Lengkap'
+              placeholder='Masukkan nama lengkap'
               register={register('name', {
                 required: 'Wajib diisi',
               })}
@@ -109,14 +109,14 @@ const index = () => {
                   <Radio
                     id='gender'
                     {...register('gender', { required: 'Wajib diisi' })}
-                    value='male'
+                    value={genderEnum.MALE}
                     colorScheme='green'>
                     Laki - laki
                   </Radio>
                   <Radio
                     id='gender'
                     {...register('gender', { required: 'Wajib diisi' })}
-                    value='female'
+                    value={genderEnum.FEMALE}
                     colorScheme='green'>
                     Perempuan
                   </Radio>
@@ -124,45 +124,45 @@ const index = () => {
               </RadioGroup>
             </FormControl>
 
-            <FormControl id='age' isInvalid={!!errors.age}>
-              <FormLabel mb={1}>Umur</FormLabel>
-              <HStack maxW='180px'>
-                <Button {...dec}>-</Button>
-                <Input
-                  id='age'
-                  focusBorderColor='green.600'
-                  {...input}
-                  {...register('age', {
-                    required: 'Wajib diisi',
-                  })}
-                />
-                <Button {...inc}>+</Button>
-              </HStack>
-              <FormErrorMessage>{errors.age && errors?.age.message}</FormErrorMessage>
-            </FormControl>
+            <FormInput
+              id='age'
+              label='Umur'
+              placeholder='Umur'
+              register={register('age', {
+                required: 'Wajib diisi',
+                valueAsNumber: true,
+                min: { value: 25, message: 'Minimal berusia 25 tahun' },
+              })}
+              error={errors.age}
+              suffix='Tahun'
+              maxW={'150px'}
+              helperText='Berumur lebih dari atau sama dengan 25 tahun'
+            />
 
             <FormInput
               id='nik'
               label='NIK'
-              placeholder='NIK'
+              placeholder='Masukkan NIK'
               register={register('nik', {
                 required: 'Wajib diisi',
                 minLength: { value: 16, message: 'Jumlah digit pada NIK minimal 16 digit' },
+                valueAsNumber: true,
               })}
               error={errors.nik}
-              helperText='Standar NIK terdiri atas 16 digit'
+              helperText='Standar NIK terdiri dari 16 digit'
             />
 
             <FormInput
               id='kk'
               label='Nomor Kartu Keluarga'
-              placeholder='No KK'
+              placeholder='Masukkan nomor Kartu Keluarga'
               register={register('kk', {
                 required: 'Wajib diisi',
                 minLength: { value: 16, message: 'Jumlah digit pada nomor KK minimal 16 digit' },
+                valueAsNumber: true,
               })}
               error={errors.kk}
-              helperText='Standar nomor KK terdiri atas 16 digit'
+              helperText='Standar nomor KK terdiri dari 16 digit'
             />
 
             <FormControl id='foto_ktp' isInvalid={!!errors.foto_ktp}>
@@ -172,20 +172,20 @@ const index = () => {
                 error={errors.foto_ktp}
                 accept={'image/*'}
                 multiple
-                register={register('foto_ktp', { required: 'Wajib diisi', validate: validateFiles })}
-                imagePreview={setfotoKTPPreview}>
-                <Button leftIcon={<Icon as={FiFile} />}>Unggah</Button>
+                register={register('foto_ktp', {
+                  required: 'Wajib diisi',
+                  validate: validateFiles,
+                  onChange: (e) =>
+                    e.target.files[0] !== undefined && setfotoKTPPreview(URL.createObjectURL(e.target.files[0])),
+                })}
+                helperText='Ukuran file maksimal 2MB'>
+                <Button leftIcon={<Icon as={FiFile} />} colorScheme='green' variant='outline' fontWeight='medium'>
+                  Unggah
+                </Button>
               </FormUpload>
               {fotoKTPPreview && (
                 <Box mt={2}>
-                  <Image
-                    src={(fotoKTPPreview)}
-                    rounded={'md'}
-                    alt='upload'
-                    width={280}
-                    height={200}
-                    fit='cover'
-                  />
+                  <Image src={fotoKTPPreview} alt='upload' width={300} height={200} fit='cover' />
                 </Box>
               )}
             </FormControl>
@@ -197,71 +197,28 @@ const index = () => {
                 error={errors.foto_kk}
                 accept={'image/*'}
                 multiple
-                register={register('foto_kk', { required: 'Wajib diisi', validate: validateFiles })}
-                imagePreview={setfotoKKPreview}>
-                <Button leftIcon={<Icon as={FiFile} />}>Unggah</Button>
+                register={register('foto_kk', {
+                  required: 'Wajib diisi',
+                  validate: validateFiles,
+                  onChange: (e) =>
+                    e.target.files[0] !== undefined && setfotoKKPreview(URL.createObjectURL(e.target.files[0])),
+                })}
+                helperText='Ukuran file maksimal 2MB'>
+                <Button leftIcon={<Icon as={FiFile} />} colorScheme='green' variant='outline' fontWeight='medium'>
+                  Unggah
+                </Button>
               </FormUpload>
               {fotoKKPreview && (
-                <Box mt={2} rounded={'lg'} overflow='hidden'>
-                  <Image src={fotoKKPreview} rounded={'md'} alt='upload' width={280} height={200} fit='cover' />
+                <Box mt={2}>
+                  <Image src={fotoKKPreview} alt='upload' width={300} height={200} fit='cover' />
                 </Box>
               )}
             </FormControl>
-
-            {/* <FormControl id='foto_ktp' isInvalid={!!errors.foto_ktp}>
-              <FormUploadImage
-                name='file'
-                control={control} //notice this
-                placeholder='Pilih bukti pembayaran'
-                acceptedFileTypes='image/png, image/jpeg'
-                isRequired
-                imagePreview={setfotoKTPPreview}
-                register={register('foto_ktp', { required: 'Wajib diisi', validate: validateFiles })}>
-                Bukti bayar
-              </FormUploadImage>
-              {fotoKTPPreview && (
-                <Box mt={2}>
-                  <Image
-                    src={URL.createObjectURL(fotoKTPPreview)}
-                    rounded={'md'}
-                    alt='upload'
-                    width={280}
-                    height={200}
-                    fit='cover'
-                  />
-                </Box>
-              )}
-            </FormControl>
-
-            <FormControl id='foto_kk' isInvalid={!!errors.foto_kk}>
-              <FormUploadImage
-                name='file'
-                control={control} //notice this
-                placeholder='Pilih bukti pembayaran'
-                acceptedFileTypes='image/png, image/jpeg'
-                isRequired
-                imagePreview={setfotoKKPreview}
-                register={register('foto_kk', { required: 'Wajib diisi', validate: validateFiles })}>
-                Bukti bayar
-              </FormUploadImage>
-              {fotoKKPreview && (
-                <Box mt={2}>
-                  <Image
-                    src={URL.createObjectURL(fotoKKPreview)}
-                    rounded={'md'}
-                    alt='upload'
-                    width={280}
-                    height={200}
-                    fit='cover'
-                  />
-                </Box>
-              )}
-            </FormControl> */}
 
             <FormTextarea
               id='address'
               label='Alamat'
-              placeholder='Alamat lengkap'
+              placeholder='Masukkan alamat lengkap'
               register={register('address', {
                 required: 'Wajib diisi',
               })}
@@ -293,23 +250,25 @@ const index = () => {
             <FormInput
               id='salaryBefore'
               label='Penghasilan sebelum pandemi'
-              placeholder='Penghasilan sebelum pandemi'
+              placeholder='Masukkan penghasilan sebelum pandemi'
               register={register('salaryBefore', {
                 required: 'Wajib diisi',
+                valueAsNumber: true,
               })}
               error={errors.salaryBefore}
-              suffix='Rp.'
+              prefix='Rp.'
             />
 
             <FormInput
               id='salaryAfter'
               label='Penghasilan setelah pandemi'
-              placeholder='Penghasilan setelah pandemi'
+              placeholder='Masukkan penghasilan setelah pandemi'
               register={register('salaryAfter', {
                 required: 'Wajib diisi',
+                valueAsNumber: true,
               })}
               error={errors.salaryAfter}
-              suffix='Rp.'
+              prefix='Rp.'
             />
 
             <FormControl id='reason' isInvalid={!!errors.reason}>
@@ -320,12 +279,9 @@ const index = () => {
                 {...register('reason', {
                   required: 'Wajib diisi',
                 })}>
-                <option value='Kepala keluarga terdampak atau korban Covid'>
-                  Kepala keluarga terdampak atau korban Covid
-                </option>
-                <option value='Tergolong fakir/miskin semenjak sebelum Covid'>
-                  Tergolong fakir/miskin semenjak sebelum Covid
-                </option>
+                <option value={reasonEnum.OPT1}>Kehilangan pekerjaan</option>
+                <option value={reasonEnum.OPT2}>Kepala keluarga terdampak atau korban Covid</option>
+                <option value={reasonEnum.OPT3}>Tergolong fakir/miskin semenjak sebelum Covid</option>
                 <option value='other'>Lainnya</option>
               </Select>
               {watchReason === 'other' && (
@@ -334,6 +290,7 @@ const index = () => {
                   placeholder='Silahkan isi alasan membutuhkan bantuan'
                   register={register('otherReason', {
                     required: 'Wajib diisi',
+                    shouldUnregister: true,
                   })}
                   error={errors.otherReason}
                 />
@@ -341,8 +298,8 @@ const index = () => {
               <FormErrorMessage>{errors.reason && errors?.reason.message}</FormErrorMessage>
             </FormControl>
           </Stack>
-          <Button mt={4} colorScheme='teal' isLoading={isSubmitting} type='submit'>
-            Submit
+          <Button leftIcon={<FiSave />} mt={4} colorScheme='green' isLoading={isSubmitting} type='submit'>
+            Simpan
           </Button>
         </chakra.form>
       </Box>

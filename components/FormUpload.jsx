@@ -2,6 +2,7 @@ import React, { ReactNode, useRef } from 'react';
 import { useForm, UseFormRegisterReturn, useController } from 'react-hook-form';
 import {
   FormLabel,
+  FormHelperText,
   FormControl,
   Input,
   InputLeftAddon,
@@ -23,7 +24,8 @@ import { Container, Flex, Heading, Text, VStack } from '@chakra-ui/layout';
 import { FiFile } from 'react-icons/fi';
 
 const FormUpload = (props) => {
-  const { label, error, register, accept, multiple, children, imagePreview } = props;
+  const { label, error, register, accept, multiple, children, helperText, icon } = props;
+
   const inputRef = useRef();
   const { ref, ...rest } = register;
 
@@ -31,7 +33,15 @@ const FormUpload = (props) => {
 
   return (
     <>
-      <FormLabel mb={1}>{label}</FormLabel>
+      <Flex>
+        <FormLabel mb={1}>{label}</FormLabel>
+        {icon}
+      </Flex>
+      {helperText && (
+        <FormHelperText mb={2} mt={-1}>
+          {helperText}
+        </FormHelperText>
+      )}
       <InputGroup onClick={handleClick}>
         <input
           type={'file'}
@@ -39,11 +49,6 @@ const FormUpload = (props) => {
           hidden
           accept={accept}
           {...rest}
-          onChange={(event) => {
-            const img = event.target.files[0];
-            console.log(img);
-            imagePreview(URL.createObjectURL(img));
-          }}
           ref={(e) => {
             ref(e);
             inputRef.current = e;
