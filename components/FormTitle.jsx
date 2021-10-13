@@ -1,17 +1,7 @@
 import {
-  Container,
-  Stack,
-  Flex,
   Box,
   Heading,
   Text,
-  Button,
-  Image,
-  Icon,
-  IconButton,
-  createIcon,
-  IconProps,
-  useColorModeValue,
 } from '@chakra-ui/react';
 const FormTitle = () => {
   return (

@@ -1,26 +1,12 @@
-import React, { ReactNode, useRef } from 'react';
-import { useForm, UseFormRegisterReturn, useController } from 'react-hook-form';
+import React, { useRef } from 'react';
 import {
   FormLabel,
   FormHelperText,
-  FormControl,
-  Input,
-  InputLeftAddon,
-  Button,
-  chakra,
-  Stack,
-  Icon,
   InputGroup,
-  RadioGroup,
   FormErrorMessage,
-  Radio,
-  HStack,
-  Textarea,
-  useNumberInput,
-  Select,
 } from '@chakra-ui/react';
 
-import { Container, Flex, Heading, Text, VStack } from '@chakra-ui/layout';
+import { Flex} from '@chakra-ui/layout';
 import { FiFile } from 'react-icons/fi';
 
 const FormUpload = (props) => {

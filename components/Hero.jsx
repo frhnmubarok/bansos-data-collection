@@ -1,18 +1,4 @@
-import {
-  Container,
-  Stack,
-  Flex,
-  Box,
-  Heading,
-  Text,
-  Button,
-  Image,
-  Icon,
-  IconButton,
-  createIcon,
-  IconProps,
-  useColorModeValue,
-} from '@chakra-ui/react';
+import { Stack, Box, Heading, Text, Button, Image } from '@chakra-ui/react';
 import Link from 'next/link';
 
 const Hero = () => {
@@ -42,7 +28,7 @@ const Hero = () => {
             </Text>
           </Heading>
           <Text color={'gray.600'} mt={4}>
-            Merupakan sebuah aplikasi yang bertujuan untuk memudahkan Ketua RW di Komplek Panghegar dalam mengelola data
+            Merupakan sebuah aplikasi yang bertujuan untuk memudahkan Ketua RW di Komplek Panghegar dalam menginput data
             warga yang membutuhkan bantuan sosial.
           </Text>
         </Box>

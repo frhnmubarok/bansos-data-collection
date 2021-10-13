@@ -10,15 +10,12 @@ import {
   Flex,
 } from '@chakra-ui/react';
 
-const FormInput = ({ id, label, placeholder, register, error, prefix, suffix, maxW, helperText, icon }) => {
+const FormInput = ({ id, label, placeholder, register, error, prefix, suffix, maxW, helperText }) => {
   return (
     <FormControl id={id} isInvalid={!!error}>
-      <Flex alignItems='center'>
-        <FormLabel mb={1} mr={1}>
-          {label}
-        </FormLabel>
-        {icon}
-      </Flex>
+      <FormLabel mb={1} mr={1}>
+        {label}
+      </FormLabel>
       {helperText && (
         <FormHelperText mb={2} mt={-1}>
           {helperText}
@@ -26,7 +23,7 @@ const FormInput = ({ id, label, placeholder, register, error, prefix, suffix, ma
       )}
       <InputGroup maxWidth={maxW}>
         {prefix && <InputLeftAddon children={prefix} />}
-        <Input id={id} placeholder={placeholder} focusBorderColor='green.600' {...register} />
+        <Input id={id} placeholder={placeholder} focusBorderColor='green.600' {...register} shadow='sm' />
         {suffix && <InputRightAddon children={suffix} />}
       </InputGroup>
       <FormErrorMessage>{error && error.message}</FormErrorMessage>
