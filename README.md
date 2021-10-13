@@ -1,4 +1,6 @@
-![app-preview](https://i.imgur.com/u3PJnUZ.png)
+<p align="center">
+  <img src="https://i.imgur.com/u3PJnUZ.png" alt='preview'>
+</p>
 
 ## Jalankan di lokal server
 
