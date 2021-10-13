@@ -1,4 +1,4 @@
-![app-preview](https://imgur.com/u3PJnUZ)
+![app-preview](https://i.imgur.com/u3PJnUZ.png)
 
 ## Jalankan di lokal server
 
