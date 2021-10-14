@@ -1,16 +1,11 @@
 import React, { useRef } from 'react';
-import {
-  FormLabel,
-  FormHelperText,
-  InputGroup,
-  FormErrorMessage,
-} from '@chakra-ui/react';
+import { FormLabel, FormHelperText, InputGroup, FormErrorMessage } from '@chakra-ui/react';
 
-import { Flex} from '@chakra-ui/layout';
+import { Flex } from '@chakra-ui/layout';
 import { FiFile } from 'react-icons/fi';
 
 const FormUpload = (props) => {
-  const { label, error, register, accept, multiple, children, helperText, icon } = props;
+  const { label, error, register, children, helperText, icon } = props;
 
   const inputRef = useRef();
   const { ref, ...rest } = register;
@@ -31,9 +26,8 @@ const FormUpload = (props) => {
       <InputGroup onClick={handleClick}>
         <input
           type={'file'}
-          multiple={multiple || false}
           hidden
-          accept={accept}
+          accept={'image/*'}
           {...rest}
           ref={(e) => {
             ref(e);

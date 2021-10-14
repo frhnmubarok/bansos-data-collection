@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://imgur.com/u3PJnUZ" alt='preview'>
+  <img src="https://i.imgur.com/u3PJnUZ.png" alt='preview'>
 </p>
 
 ## Jalankan di lokal server
@@ -13,11 +13,11 @@ yarn dev
 
 ## Tech Stack
 
-Teknologi yang saya gunakan dalam projek ini
+Frontend Framework yang saya gunakan dalam projek ini
 
 - [Next.js](https://nextjs.org/)
 - [Chakra UI](https://chakra-ui.com/)
-- [Hosted on Vercel](https://vercel.com)
+- [Hosted on Vercel](https://vercel.com/)
 
 ## Informasi Jabarcodingcamp 2021
 

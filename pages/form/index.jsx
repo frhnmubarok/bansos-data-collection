@@ -21,22 +21,30 @@ import {
 import { useToast } from '@chakra-ui/react';
 import { Box, Container, Flex, Heading, StackDivider, Text, VStack } from '@chakra-ui/layout';
 import { FiFile, FiSave } from 'react-icons/fi';
+import Compressor from 'compressorjs';
 import FormInput from '../../components/FormInput';
 import FormTextarea from '../../components/FormTextarea';
 import FormUpload from '../../components/FormUpload';
 import { genderEnum, reasonEnum } from '../../constants/enums';
 import server from '../../services/server';
 import FormTitle from '../../components/FormTitle';
+import imageCompress from '../../utils/imageCompress';
+import validateFiles from '../../utils/validateFiles';
+import imageResizer from '../../utils/imageResizer';
 
 const index = () => {
   const [fotoKTPPreview, setfotoKTPPreview] = useState(null);
   const [fotoKKPreview, setfotoKKPreview] = useState(null);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [compressedKTP, setCompressedKTP] = useState(null);
+  const [compressedKK, setCompressedKK] = useState(null);
   const {
     handleSubmit,
     register,
     watch,
     getValues,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm();
   const toast = useToast();
@@ -44,7 +52,7 @@ const index = () => {
 
   const watchReason = watch('reason');
 
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     let time = Math.floor(Math.random() * 2500);
     let reason = getValues('reason');
     let otherReason = getValues('otherReason');
@@ -53,12 +61,14 @@ const index = () => {
       delete values.otherReason;
     }
 
-    return server(values, reason, time)
+    const data = { ...values, reason, foto_ktp: compressedKTP, foto_kk: compressedKK };
+
+    return server(data, time)
       .then((res) => {
         console.log(res);
         router.push('/form/success');
       })
-      .catch((err) => {
+      .catch(() => {
         toast({
           title: 'Gagal',
           description: 'Sistem sedang sibuk. Mohon coba lagi dalam beberapa saat.',
@@ -70,26 +80,12 @@ const index = () => {
       });
   };
 
-  const validateFiles = (value) => {
-    if (value.length < 1) {
-      return 'Files is required';
-    }
-    for (const file of Array.from(value)) {
-      const fsMb = file.size / (1024 * 1024);
-      const MAX_FILE_SIZE = 2;
-      if (fsMb > MAX_FILE_SIZE) {
-        return 'Max file size 2mb';
-      }
-    }
-    return true;
-  };
-
   return (
     <Container py={8} maxW={['container.sm', 'container.sm']} px={4}>
       <FormTitle />
       <Box boxShadow={'md'} rounded={'md'} p={4} borderWidth='1px'>
         <chakra.form onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={6} divider={<StackDivider borderColor='gray.400' />} mb={4}>
+          <Stack spacing={6} divider={<StackDivider borderColor='gray.200' />} mb={4}>
             <Stack spacing={5}>
               <FormInput
                 id='name'
@@ -132,6 +128,14 @@ const index = () => {
                   required: 'Wajib diisi',
                   valueAsNumber: true,
                   min: { value: 25, message: 'Minimal berusia 25 tahun' },
+                  onChange: (e) => {
+                    if (e.target.value < 25)
+                      setError('age', {
+                        type: 'manual',
+                        message: 'Minimal berusia 25 tahun',
+                      });
+                    else clearErrors('age');
+                  },
                 })}
                 error={errors.age}
                 suffix='Tahun'
@@ -145,8 +149,16 @@ const index = () => {
                 placeholder='Masukkan NIK'
                 register={register('nik', {
                   required: 'Wajib diisi',
-                  minLength: { value: 16, message: 'Jumlah digit pada NIK minimal 16 digit' },
-                  valueAsNumber: true,
+                  minLength: { value: 16, message: 'Jumlah digit pada NIK adalah 16 digit' },
+                  maxLength: { value: 16, message: 'Jumlah digit pada NIK adalah 16 digit' },
+                  onChange: (e) => {
+                    if (e.target.value.length !== 16)
+                      setError('nik', {
+                        type: 'manual',
+                        message: 'Jumlah digit pada NIK adalah 16 digit',
+                      });
+                    else clearErrors('nik');
+                  },
                 })}
                 error={errors.nik}
                 helperText='Standar NIK terdiri dari 16 digit'
@@ -158,8 +170,16 @@ const index = () => {
                 placeholder='Masukkan nomor Kartu Keluarga'
                 register={register('no_kk', {
                   required: 'Wajib diisi',
-                  minLength: { value: 16, message: 'Jumlah digit pada nomor KK minimal 16 digit' },
-                  valueAsNumber: true,
+                  minLength: { value: 16, message: 'Jumlah digit pada nomor KK adalah 16 digit' },
+                  maxLength: { value: 16, message: 'Jumlah digit pada nomor KK adalah 16 digit' },
+                  onChange: (e) => {
+                    if (e.target.value.length !== 16)
+                      setError('no_kk', {
+                        type: 'manual',
+                        message: 'Jumlah digit pada nomor KK adalah 16 digit',
+                      });
+                    else clearErrors('no_kk');
+                  },
                 })}
                 error={errors.no_kk}
                 helperText='Standar nomor KK terdiri dari 16 digit'
@@ -172,13 +192,14 @@ const index = () => {
                   name='foto_ktp'
                   label='Foto KTP'
                   error={errors.foto_ktp}
-                  accept={'image/*'}
-                  multiple
                   register={register('foto_ktp', {
                     required: 'Wajib diisi',
                     validate: validateFiles,
-                    onChange: (e) =>
-                      e.target.files[0] !== undefined && setfotoKTPPreview(URL.createObjectURL(e.target.files[0])),
+                    onChange: async (e) => {
+                      const file = e.target.files[0];
+                      if (file !== undefined) setfotoKTPPreview(URL.createObjectURL(file));
+                      setCompressedKTP(await imageResizer(file));
+                    },
                   })}
                   helperText='Ukuran file maksimal 2MB'>
                   <Button leftIcon={<Icon as={FiFile} />} colorScheme='green' variant='outline' fontWeight='medium'>
@@ -197,13 +218,14 @@ const index = () => {
                   id='foto_kk'
                   label='Foto Kartu Keluarga'
                   error={errors.foto_kk}
-                  accept={'image/*'}
-                  multiple
                   register={register('foto_kk', {
                     required: 'Wajib diisi',
                     validate: validateFiles,
-                    onChange: (e) =>
-                      e.target.files[0] !== undefined && setfotoKKPreview(URL.createObjectURL(e.target.files[0])),
+                    onChange: async (e) => {
+                      const file = e.target.files[0];
+                      if (file !== undefined) setfotoKKPreview(URL.createObjectURL(file));
+                      setCompressedKK(await imageResizer(file));
+                    },
                   })}
                   helperText='Ukuran file maksimal 2MB'>
                   <Button

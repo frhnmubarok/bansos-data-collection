@@ -1,7 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import '@fontsource/lato';
 
-import theme from '../theme';
+import theme from '../utils/theme';
 
 function MyApp({ Component, pageProps }) {
   return (
