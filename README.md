@@ -1,6 +1,14 @@
 <p align="center">
-  <img src="https://i.imgur.com/u3PJnUZ.png" alt='preview'>
+  <img src="https://i.imgur.com/Pw7Ep8R.png" alt='preview'>
 </p>
+
+- [Jalankan di lokal server](#jalankan-di-lokal-server)
+- [Tech Stack](#tech-stack)
+- [Informasi Jabarcodingcamp 2021](#informasi-jabarcodingcamp-2021)
+  - [Data diri](#data-diri)
+  - [Demo](#demo)
+  - [Web host](#web-host)
+- [Alasan layout yang diterapkan](#alasan-layout-yang-diterapkan)
 
 ## Jalankan di lokal server
 
@@ -13,7 +21,7 @@ yarn dev
 
 ## Tech Stack
 
-Frontend Framework yang saya gunakan dalam projek ini
+Teknologi yang saya gunakan dalam projek ini
 
 - [Next.js](https://nextjs.org/)
 - [Chakra UI](https://chakra-ui.com/)
@@ -36,8 +44,8 @@ Frontend Framework yang saya gunakan dalam projek ini
 
 ## Alasan layout yang diterapkan
 
-| Halaman  | Alasan                                                                                                                                                                                                                                                |
-| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Homepage | Di homepage hanya ada elemen title, keterangan, ilustrasi, dan tombol untuk berpindah ke halaman form. Ini saya lakukan untuk membuat homepage menjadi simple                                                                                         |
-| Form     | Tiap input field sudah mengikuti JDS Design System seperti penggunaan label, teks bantuan, dan juga teks error & validasi. Lalu saya grouping input field ke dalam beberapa bagian, seperti bagian data diri, upload, alamat, dan keterangan bantuan. |
-| Success  | Disini terdapat elemen ilustrasi yang menggambarkan data berhasil ditambah, keterangan halaman, dan juga tombol untuk menambah data lagi dan tombol untuk kembali ke halaman utama.                                                                   |
+| Halaman  | Alasan                                                                                                                                                                                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Homepage | Di homepage hanya ada elemen title, keterangan, ilustrasi, dan tombol untuk berpindah ke halaman form. Ini saya lakukan untuk membuat homepage menjadi simple.                                                                                                                                 |
+| Form     | Tiap input field sudah mengikuti JDS Design System seperti penggunaan label, teks bantuan, dan juga teks error & validasi. Lalu saya susun input field mulai dari bagian data diri, upload, alamat, dan keterangan bantuan. Agar tidak terlalu sempit, tiap input field diberi spacing `2rem`. |
+| Success  | Disini terdapat elemen ilustrasi yang menggambarkan data berhasil ditambah, keterangan halaman, dan juga tombol untuk menambah data lagi dan tombol untuk kembali ke halaman utama.                                                                                                            |

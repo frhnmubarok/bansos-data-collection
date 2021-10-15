@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { FormLabel, FormHelperText, InputGroup, FormErrorMessage } from '@chakra-ui/react';
 
 import { Flex } from '@chakra-ui/layout';
-import { FiFile } from 'react-icons/fi';
 
 const FormUpload = (props) => {
   const { label, error, register, children, helperText, icon } = props;

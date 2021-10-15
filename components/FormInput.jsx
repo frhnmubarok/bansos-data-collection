@@ -7,7 +7,6 @@ import {
   InputRightAddon,
   FormErrorMessage,
   FormHelperText,
-  Flex,
 } from '@chakra-ui/react';
 
 const FormInput = ({ id, label, placeholder, register, error, prefix, suffix, maxW, helperText }) => {

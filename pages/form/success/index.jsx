@@ -19,10 +19,12 @@ const index = () => {
           <Flex justify='center'>
             <ButtonGroup spacing='4' colorScheme='green' mt={4}>
               <Link href='/form'>
-                <Button>Tambah data</Button>
+                <Button shadow='base'>Tambah data</Button>
               </Link>
               <Link href='/'>
-                <Button variant='outline'>Halaman utama</Button>
+                <Button variant='outline' shadow='base'>
+                  Halaman utama
+                </Button>
               </Link>
             </ButtonGroup>
           </Flex>
