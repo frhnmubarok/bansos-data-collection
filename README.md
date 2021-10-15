@@ -2,6 +2,8 @@
   <img src="https://i.imgur.com/Pw7Ep8R.png" alt='preview'>
 </p>
 
+## Daftar isi
+
 - [Jalankan di lokal server](#jalankan-di-lokal-server)
 - [Tech Stack](#tech-stack)
 - [Informasi Jabarcodingcamp 2021](#informasi-jabarcodingcamp-2021)
