@@ -38,7 +38,7 @@ Teknologi yang saya gunakan dalam projek ini
 
 ### Demo
 
-- [Video demo](https://nextjs.org/)
+- [Video demo](https://drive.google.com/file/d/1_E1cpXlHVInDxHmnEIm7L1iIH660-L3A/view?usp=sharing)
 
 ### Web host
 
