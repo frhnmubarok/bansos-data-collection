@@ -2,7 +2,7 @@
   <img src="https://i.imgur.com/Pw7Ep8R.png" alt='preview'>
 </p>
 
-> Illustration by [Vecteezy](https://nextjs.org/)
+> Illustration by [Vecteezy](https://www.vecteezy.com/free-vector/donation)
 
 ## Daftar isi
 
