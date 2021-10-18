@@ -1,6 +1,7 @@
 <p align="center">
   <img src="https://i.imgur.com/Pw7Ep8R.png" alt='preview'>
 </p>
+_Illustration by [Vecteezy](https://www.vecteezy.com/free-vector/donation)_
 
 ## Daftar isi
 
